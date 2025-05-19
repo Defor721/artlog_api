@@ -13,17 +13,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum LoginType {
+  LOCAL   // 일반 로그인
+  GOOGLE  // 구글 로그인  // 깃허브 로그인
+  KAKAO
+  NAVER
+}
+
+
 model User {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   email       String  @unique // 이메일은 유니크하지만, 같은 이메일로 다른 provider 사용 가능
+  password    String?
   name        String?
   image       String?
-  provider    String  // OAuth 제공자 (google, kakao, naver 등)
-  providerId  String  // 해당 제공자의 사용자 ID
-
-  // 🔹 provider + providerId를 복합 유니크 키로 설정
-  @@unique([provider, providerId])
-
+  loginType   LoginType
+  providerId  String?  // 해당 제공자의 사용자 ID
   createdAt   DateTime @default(now()) // 생성 시간
   updatedAt   DateTime @updatedAt // 자동 업데이트 시간
   records     Record[]
