@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  email       String  @unique // 이메일은 유니크하지만, 같은 이메일로 다른 provider 사용 가능
+  name        String?
+  image       String?
+  provider    String  // OAuth 제공자 (google, kakao, naver 등)
+  providerId  String  // 해당 제공자의 사용자 ID
+
+  // 🔹 provider + providerId를 복합 유니크 키로 설정
+  @@unique([provider, providerId])
+
+  createdAt   DateTime @default(now()) // 생성 시간
+  updatedAt   DateTime @updatedAt // 자동 업데이트 시간
+  records     Record[]
+}
+
+model Performance {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  seq         String  @unique
+  area        String
+  gpsX        Float
+  gpsY        Float
+  place       String
+  realmName   String
+  serviceName String
+  startDate   String
+  endDate     String
+  thumbnail   String
+  title       String
+}
+
+model Record {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  user              User     @relation(fields: [userId], references: [id])
+  userId            String
+  selectedExhibition Json?
+  star               Int
+  title              String
+  detail             String
+  isPublic           Boolean
+  keywords           String[]
+  ticket             String?
+  photos             String[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
