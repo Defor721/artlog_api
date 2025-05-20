@@ -7,10 +7,18 @@ import { PerformancesModule } from './performances/performances.module';
 import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './common/guards/roles.guard';
 
 @Module({
-  imports: [PrismaModule, UsersModule, PerformancesModule, AuthModule, UploadModule],
+  imports: [
+    PrismaModule,
+    UsersModule,
+    PerformancesModule,
+    AuthModule,
+    UploadModule,
+  ],
   controllers: [AppController, AuthController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: RolesGuard }],
 })
 export class AppModule {}

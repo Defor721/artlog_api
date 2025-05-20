@@ -8,7 +8,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
+  @Get('all')
   @ApiOperation({ summary: '모든 유저 조회' })
   @ApiResponse({ status: 200, description: '유저 목록 반환' })
   getUsers() {

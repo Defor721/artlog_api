@@ -36,11 +36,13 @@ export class AuthService {
       throw new Error('Invalid credentials');
     }
     const token = await this.jwtService.signAsync({
-      sub: user.id, // payload (subject)
+      sub: user.id,
+      email: user.email,
+      role: user.role,
     });
-
     return { user, token };
   }
+
   async loginSocial({
     provider,
     providerId,
@@ -69,7 +71,9 @@ export class AuthService {
       });
     }
     const token = await this.jwtService.signAsync({
-      sub: user.id, // payload (subject)
+      sub: user.id,
+      email: user.email,
+      role: user.role,
     });
     return { user, token };
   }
