@@ -15,5 +15,6 @@ export class RegisterDto {
   @ApiProperty({ example: '응애', minLength: 2 })
   @IsString()
   @MinLength(2)
+  @IsOptional()
   name: string;
 }

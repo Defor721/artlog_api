@@ -22,13 +22,15 @@ export class AuthController {
 
   // 소셜 로그인 (예: GoogleStrategy에서 req.user에 담긴 값)
   @Post('social-login')
+  @ApiOperation({ summary: '소셜 로그인' })
+  @ApiResponse({ status: 200, description: '로그인 성공' })
   socialLogin(@Body() dto: SocialLoginDto) {
     return this.authService.loginSocial(dto);
   }
   // 회원가입
   @Post('register')
-  @ApiOperation({ summary: '회원 가입' })
-  @ApiResponse({ status: 200, description: '회원 가입 성공' })
+  @ApiOperation({ summary: '회원가입' })
+  @ApiResponse({ status: 200, description: '회원가입 성공' })
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }

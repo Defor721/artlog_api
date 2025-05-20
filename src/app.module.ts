@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RolesGuard } from './common/guards/roles.guard';
     PerformancesModule,
     AuthModule,
     UploadModule,
+    PostsModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, { provide: APP_GUARD, useClass: RolesGuard }],
