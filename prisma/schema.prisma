@@ -37,7 +37,7 @@ model User {
   role        Role   @default(USER) // 관리자계정은 DB에서 생성
   createdAt   DateTime @default(now()) // 생성 시간
   updatedAt   DateTime @updatedAt // 자동 업데이트 시간
-  records     Post[] // 사용자 게시물 기록
+  posts     Post[] // 사용자 게시물 기록
 }
 
 model Performance {
@@ -57,10 +57,10 @@ model Performance {
 
 model Post {
   id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  user              User     @relation(fields: [userId], references: [id])
+  user              User     @relation(fields: [userId], references: [id]) // fields:외래키역할을하는 필드 references:연결된 상대 모델의 필드
   userId            String   @db.ObjectId
   selectedExhibition String
-  star               Int
+  star               Float
   title              String
   detail             String
   isPublic           Boolean

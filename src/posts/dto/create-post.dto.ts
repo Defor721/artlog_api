@@ -4,20 +4,17 @@ import {
   IsOptional,
   IsString,
   IsArray,
+  IsNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatePostDto {
-  @ApiProperty({ example: '67c65a6d1245daeec1ab25e9' })
-  @IsString()
-  userId: string;
-
   @ApiProperty({ example: '반 고흐 회화전' })
   @IsString()
   selectedExhibition: string;
 
   @ApiProperty({ example: 3.5 })
-  @IsInt()
+  @IsNumber()
   star: number;
 
   @ApiProperty({ example: '반 고흐 회화전' })
