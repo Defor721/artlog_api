@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
-
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('users') // Swagger 태그
@@ -13,5 +13,10 @@ export class UsersController {
   @ApiResponse({ status: 200, description: '유저 목록 반환' })
   getUsers() {
     return this.usersService.findAll();
+  }
+  @UseGuards(AuthGuard('jwt'))
+  @Get('me')
+  getMe(@Req() req) {
+    return req.user; // ✅ JwtStrategy.validate()에서 리턴한 값이 들어 있음
   }
 }

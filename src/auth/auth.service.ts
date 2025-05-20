@@ -3,12 +3,14 @@ import { BcryptWorkerService } from '../workers/bcrypt.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginType } from '@prisma/client';
 import { RegisterDto } from './dto/register.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private bcryptService: BcryptWorkerService,
     private prisma: PrismaService,
+    private jwtService: JwtService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -30,9 +32,14 @@ export class AuthService {
       plainPassword,
       user.password,
     );
-    if (!isMatch) throw new Error('Invalid credentials');
+    if (!isMatch) {
+      throw new Error('Invalid credentials');
+    }
+    const token = await this.jwtService.signAsync({
+      sub: user.id, // payload (subject)
+    });
 
-    return user;
+    return { user, token };
   }
   async loginSocial({
     provider,
@@ -47,23 +54,23 @@ export class AuthService {
     name?: string;
     image?: string;
   }) {
-    const user = await this.prisma.user.findFirst({
+    let user = await this.prisma.user.findFirst({
       where: { providerId, loginType: provider },
     });
-
-    if (user) {
-      return user; // 기존 유저 → 로그인 처리
+    if (!user) {
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          name,
+          image,
+          loginType: provider,
+          providerId,
+        },
+      });
     }
-
-    // 없으면 새로 등록
-    return this.prisma.user.create({
-      data: {
-        email,
-        name,
-        image,
-        loginType: provider,
-        providerId,
-      },
+    const token = await this.jwtService.signAsync({
+      sub: user.id, // payload (subject)
     });
+    return { user, token };
   }
 }
