@@ -1,4 +1,4 @@
-// src/workers/bcrypt.service.ts
+// bcrypt 작업 워커스레드로 대리
 import { Injectable } from '@nestjs/common';
 import { Worker } from 'worker_threads';
 import { join } from 'path';

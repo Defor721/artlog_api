@@ -1,4 +1,4 @@
-// src/workers/bcrypt.worker.ts
+// bcrypt 작업 워커스레드로 대리
 import { parentPort, workerData } from 'worker_threads';
 import * as bcrypt from 'bcrypt';
 
