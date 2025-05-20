@@ -72,7 +72,7 @@ model Post {
 }
 
 model Upload {
- id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   originalName String
   mimeType     String
   data         Bytes

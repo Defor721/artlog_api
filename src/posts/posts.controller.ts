@@ -1,7 +1,8 @@
 import { PostsService } from './posts.service';
-import { Controller, Body, Post, UseGuards, Req } from '@nestjs/common';
+import { Controller, Body, Post, UseGuards, Get, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreatePostDto } from './dto/create-post.dto';
+import { GetPostDto } from './dto/get-post.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/common/decorators/user.decorator';
 
@@ -16,5 +17,11 @@ export class PostsController {
   @UseGuards(AuthGuard('jwt'))
   uploadPost(@Body() dto: CreatePostDto, @User('userId') userId: string) {
     return this.postsService.createPost(dto, userId);
+  }
+
+  @Get(':postId')
+  @UseGuards(AuthGuard('jwt'))
+  getPost(@Param() dto: GetPostDto, @User('userId') userId: string) {
+    return this.postsService.getPost(dto, userId);
   }
 }
