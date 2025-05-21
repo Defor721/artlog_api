@@ -1,5 +1,13 @@
 import { Controller } from '@nestjs/common';
-import { Body, Post, Get, UseGuards, Req } from '@nestjs/common';
+import {
+  Body,
+  Post,
+  Get,
+  UseGuards,
+  Req,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginType } from '@prisma/client';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -7,6 +15,7 @@ import { RegisterDto } from './dto/register.dto';
 import { SocialLoginDto } from './dto/social-login.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Response, Request } from 'express'; // res,req.cookie 사용하기 위해서 필요
 
 @ApiTags('auth')
 @Controller('auth')
@@ -15,10 +24,21 @@ export class AuthController {
 
   // 일반 로그인
   @Post('login')
-  @ApiOperation({ summary: '일반 로그인' })
-  @ApiResponse({ status: 200, description: '로그인 성공' })
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto.email, dto.password);
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { user, accessToken, refreshToken } = await this.authService.login(
+      dto.email,
+      dto.password,
+    );
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+    return { user, accessToken };
   }
   // 로그아웃
   @Post('logout')
@@ -33,8 +53,21 @@ export class AuthController {
   @Post('social-login')
   @ApiOperation({ summary: '소셜 로그인' })
   @ApiResponse({ status: 200, description: '로그인 성공' })
-  socialLogin(@Body() dto: SocialLoginDto) {
-    return this.authService.loginSocial(dto);
+  async socialLogin(
+    @Body() dto: SocialLoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { user, accessToken, refreshToken } =
+      await this.authService.loginSocial(dto);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+
+    return { user, accessToken };
   }
   // 회원가입
   @Post('register')
@@ -51,15 +84,23 @@ export class AuthController {
   }
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  async googleCallback(@Req() req) {
+  async googleCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
     const { provider, providerId, email, name, image } = req.user;
-    return this.authService.loginSocial({
-      provider,
-      providerId,
-      email,
-      name,
-      image,
+    const { user, accessToken, refreshToken } =
+      await this.authService.loginSocial({
+        provider,
+        providerId,
+        email,
+        name,
+        image,
+      });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     });
+    return { user, accessToken };
   }
   // 네이버 로그인
   @Get('naver')
@@ -69,15 +110,25 @@ export class AuthController {
   }
   @Get('naver/callback')
   @UseGuards(AuthGuard('naver'))
-  async naverCallback(@Req() req) {
+  async naverCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
     const { provider, providerId, email, name, image } = req.user;
-    return this.authService.loginSocial({
-      provider,
-      providerId,
-      email,
-      name,
-      image,
+    const { user, accessToken, refreshToken } =
+      await this.authService.loginSocial({
+        provider,
+        providerId,
+        email,
+        name,
+        image,
+      });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     });
+
+    return { user, accessToken };
   }
   // 카카오 로그인
   @Get('kakao')
@@ -87,19 +138,31 @@ export class AuthController {
   }
   @Get('kakao/callback')
   @UseGuards(AuthGuard('kakao'))
-  async kakaoCallback(@Req() req) {
+  async kakaoCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
     const { provider, providerId, email, name, image } = req.user;
-    return this.authService.loginSocial({
-      provider,
-      providerId,
-      email,
-      name,
-      image,
+    const { user, accessToken, refreshToken } =
+      await this.authService.loginSocial({
+        provider,
+        providerId,
+        email,
+        name,
+        image,
+      });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
     });
+
+    return { user, accessToken };
   }
   //토큰 재발급
   @Post('refresh')
-  async refresh(@Body('refreshToken') token: string) {
+  async refresh(@Req() req: Request) {
+    const token = req.cookies?.refreshToken;
+    if (!token) throw new UnauthorizedException('Refresh token not found');
     return this.authService.refreshAccessToken(token);
   }
 }

@@ -1,9 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(cookieParser());
+  app.enableCors({
+    origin: 'http://localhost:3001', // 프론트 도메인
+    credentials: true, // ✅ 쿠키 전송 허용
+  });
   const config = new DocumentBuilder()
     .setTitle('ArtLog API')
     .setDescription('ArtLog API Document')
