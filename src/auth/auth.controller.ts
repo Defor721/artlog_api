@@ -20,6 +20,14 @@ export class AuthController {
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.password);
   }
+  // 로그아웃
+  @Post('logout')
+  @UseGuards(AuthGuard('jwt'))
+  async logout(@Req() req) {
+    const userId = req.user.userId;
+    await this.authService.deleteRefreshToken(userId);
+    return { message: '로그아웃 완료' };
+  }
 
   // 소셜 로그인 (예: GoogleStrategy에서 req.user에 담긴 값)
   @Post('social-login')
@@ -35,12 +43,12 @@ export class AuthController {
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
+  // 구글 로그인
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleLogin() {
     // 리다이렉트 되므로 로직 불필요
   }
-
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req) {
@@ -53,13 +61,12 @@ export class AuthController {
       image,
     });
   }
-
+  // 네이버 로그인
   @Get('naver')
   @UseGuards(AuthGuard('naver'))
   async naverLogin() {
     // 리다이렉트 되므로 로직 불필요
   }
-
   @Get('naver/callback')
   @UseGuards(AuthGuard('naver'))
   async naverCallback(@Req() req) {
@@ -72,13 +79,12 @@ export class AuthController {
       image,
     });
   }
-
+  // 카카오 로그인
   @Get('kakao')
   @UseGuards(AuthGuard('kakao'))
   async kakaoLogin() {
     // 리다이렉트 되므로 로직 불필요
   }
-
   @Get('kakao/callback')
   @UseGuards(AuthGuard('kakao'))
   async kakaoCallback(@Req() req) {
@@ -90,5 +96,10 @@ export class AuthController {
       name,
       image,
     });
+  }
+  //토큰 재발급
+  @Post('refresh')
+  async refresh(@Body('refreshToken') token: string) {
+    return this.authService.refreshAccessToken(token);
   }
 }
