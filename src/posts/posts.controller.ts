@@ -11,6 +11,14 @@ import { User } from 'src/common/decorators/user.decorator';
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
+  @Get()
+  @ApiOperation({ summary: '게시물 목록 조회' })
+  @ApiResponse({ status: 200, description: '게시물 목록 조회 완료' })
+  @UseGuards(AuthGuard('jwt'))
+  getPosts(@User('userId') userId: string) {
+    return this.postsService.getPosts(userId);
+  }
+
   @Post()
   @ApiOperation({ summary: '게시물 포스팅' })
   @ApiResponse({ status: 200, description: '포스트 생성 완료' })
@@ -20,6 +28,8 @@ export class PostsController {
   }
 
   @Get(':postId')
+  @ApiOperation({ summary: '게시물 상세 조회' })
+  @ApiResponse({ status: 200, description: '게시물 상세 조회 완료' })
   @UseGuards(AuthGuard('jwt'))
   getPost(@Param() dto: GetPostDto, @User('userId') userId: string) {
     return this.postsService.getPost(dto, userId);

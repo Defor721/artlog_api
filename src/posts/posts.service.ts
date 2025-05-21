@@ -23,4 +23,10 @@ export class PostsService {
       where: { id: dto.postId, userId: userId },
     });
   }
+  // 전체 포스트 조회
+  async getPosts(userId: string) {
+    return this.prisma.post.findMany({
+      where: { userId: userId },
+    });
+  }
 }

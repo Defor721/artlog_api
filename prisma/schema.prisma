@@ -44,8 +44,6 @@ model Performance {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   seq         String  @unique
   area        String
-  gpsX        Float
-  gpsY        Float
   place       String
   realmName   String
   serviceName String
