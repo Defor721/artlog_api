@@ -12,8 +12,8 @@ NestJS, Prisma, JWT 기반의 RESTful API 서버입니다.
 
 ## Project setup (Development)
 
-git clone https://github.com/Defor721/artlog_api.git
-cd artlog_api
-npm install
+- git clone https://github.com/Defor721/artlog_api.git
+- cd artlog_api
+- npm install
 
 ## Project setupRun (Development)
