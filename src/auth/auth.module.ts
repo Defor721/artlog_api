@@ -6,6 +6,8 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { NaverStrategy } from './strategies/naver.strategy';
+import { KakaoStrategy } from './strategies/kakao.strategy';
 
 @Module({
   imports: [
@@ -15,7 +17,14 @@ import { GoogleStrategy } from './strategies/google.strategy';
       signOptions: { expiresIn: '7d' },
     }),
   ],
-  providers: [AuthService, BcryptWorkerService, GoogleStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    BcryptWorkerService,
+    GoogleStrategy,
+    JwtStrategy,
+    NaverStrategy,
+    KakaoStrategy,
+  ],
   exports: [AuthService],
   controllers: [AuthController],
 })
