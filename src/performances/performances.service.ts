@@ -1,12 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class PerformancesService {
-  constructor(private prisma: PrismaService) {}
-
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
   async getPerformances() {
-    return this.prisma.performance.findMany();
+    const cached = await this.cacheManager.get('performances');
+    if (cached) {
+      return cached;
+    }
+
+    const data = await this.prisma.performance.findMany();
+    await this.cacheManager.set('performances', data, 60000); // 60초간 캐시(밀리초).cachemanager 5.0 이상부터 밀리초
+    return data;
   }
 
   async getPerformance(seq: string) {

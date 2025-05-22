@@ -24,6 +24,8 @@ export class AuthController {
 
   // 일반 로그인
   @Post('login')
+  @ApiOperation({ summary: '일반 로그인' })
+  @ApiResponse({ status: 200, description: '로그인 성공' })
   async login(
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -42,6 +44,8 @@ export class AuthController {
   }
   // 로그아웃
   @Post('logout')
+  @ApiOperation({ summary: '로그아웃' })
+  @ApiResponse({ status: 200, description: '로그아웃 성공' })
   @UseGuards(AuthGuard('jwt'))
   async logout(@Req() req) {
     const userId = req.user.userId;
@@ -160,6 +164,8 @@ export class AuthController {
   }
   //토큰 재발급
   @Post('refresh')
+  @ApiOperation({ summary: '토큰 재발급' })
+  @ApiResponse({ status: 200, description: '재발급 성공' })
   async refresh(@Req() req: Request) {
     const token = req.cookies?.refreshToken;
     if (!token) throw new UnauthorizedException('Refresh token not found');

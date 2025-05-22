@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
+import { CacheModule } from '@nestjs/cache-manager';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
@@ -13,6 +14,7 @@ import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
+    CacheModule.register({ isGlobal: true, store: 'memory' }), //전역에서 사용하도록, TTL 설정할 것.
     PrismaModule,
     UsersModule,
     PerformancesModule,
