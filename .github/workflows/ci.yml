@@ -1,4 +1,4 @@
-name: CI/CD for NestJS
+name: CI for ArtLog_Api
 
 on:
   push:
