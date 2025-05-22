@@ -14,7 +14,7 @@ import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
-    CacheModule.register({ isGlobal: true, store: 'memory' }), //전역에서 사용하도록, TTL 설정할 것.
+    CacheModule.register({ isGlobal: true }), //전역에서 사용하도록, TTL 설정할 것. 추후 Redis 고려
     PrismaModule,
     UsersModule,
     PerformancesModule,
