@@ -1,0 +1,27 @@
+name: CI/CD for NestJS
+
+on:
+  push:
+    branches: [main]  # main 브랜치에 푸시될 때만 실행
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🔧 Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: ✅ Run tests
+        run: npm run test
+
+      - name: 🧪 Lint check
+        run: npm run lint
