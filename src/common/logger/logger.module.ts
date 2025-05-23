@@ -16,11 +16,11 @@ import * as winston from 'winston';
           ),
         }),
         new winston.transports.File({
-          filename: 'logs/error.log',
-          level: 'error',
+          filename: 'logs/error.log', //로그 파일 저장 경로
+          level: 'error', // 에러 이상(error,critical,fatal등)
           format: winston.format.combine(
             winston.format.timestamp(),
-            winston.format.json(),
+            winston.format.json(), //json형식으로 저장
           ),
         }),
       ],
