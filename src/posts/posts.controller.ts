@@ -44,10 +44,10 @@ export class PostsController {
   }
 
   @Delete(':postId')
-  @ApiOperation({ summary: '게시물 삭제제' })
+  @ApiOperation({ summary: '게시물 삭제' })
   @ApiResponse({ status: 200, description: '게시물 삭제 완료' })
   @UseGuards(AuthGuard('jwt'))
-  deletePost(@Param() dto: PostParamDto) {
-    return this.postsService.deletePost(dto);
+  deletePost(@Param() dto: PostParamDto, @User('userId') userId: string) {
+    return this.postsService.deletePost(dto, userId);
   }
 }
