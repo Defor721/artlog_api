@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { GetPostDto } from './dto/get-post.dto';
+import { PostParamDto } from './dto/postParam.dto';
 @Injectable()
 export class PostsService {
   constructor(private prisma: PrismaService) {}
@@ -18,7 +18,7 @@ export class PostsService {
     });
   }
   //id기반 포스트 검색
-  async getPost(dto: GetPostDto, userId: string) {
+  async getPost(dto: PostParamDto, userId: string) {
     return this.prisma.post.findFirst({
       where: { id: dto.postId, userId: userId },
     });
@@ -27,6 +27,12 @@ export class PostsService {
   async getPosts(userId: string) {
     return this.prisma.post.findMany({
       where: { userId: userId },
+    });
+  }
+  // 단일 포스트 삭제
+  async deletePost(dto: PostParamDto) {
+    return this.prisma.post.delete({
+      where: { id: dto.postId }, // delete는 복합유니크조건이 아니면 단일 조건만 가능함.
     });
   }
 }

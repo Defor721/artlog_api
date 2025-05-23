@@ -57,7 +57,7 @@ export class AuthService {
     if (!isMatch) {
       throw new Error('Invalid credentials');
     }
-    // 액세스 토큰 생성성
+    // 액세스 토큰 생성
     const accessToken = await this.jwtService.signAsync(
       {
         userId: user.id,

@@ -1,8 +1,16 @@
 import { PostsService } from './posts.service';
-import { Controller, Body, Post, UseGuards, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Post,
+  UseGuards,
+  Get,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreatePostDto } from './dto/create-post.dto';
-import { GetPostDto } from './dto/get-post.dto';
+import { PostParamDto } from './dto/postParam.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/common/decorators/user.decorator';
 
@@ -31,7 +39,15 @@ export class PostsController {
   @ApiOperation({ summary: '게시물 상세 조회' })
   @ApiResponse({ status: 200, description: '게시물 상세 조회 완료' })
   @UseGuards(AuthGuard('jwt'))
-  getPost(@Param() dto: GetPostDto, @User('userId') userId: string) {
+  getPost(@Param() dto: PostParamDto, @User('userId') userId: string) {
     return this.postsService.getPost(dto, userId);
+  }
+
+  @Delete(':postId')
+  @ApiOperation({ summary: '게시물 삭제제' })
+  @ApiResponse({ status: 200, description: '게시물 삭제 완료' })
+  @UseGuards(AuthGuard('jwt'))
+  deletePost(@Param() dto: PostParamDto) {
+    return this.postsService.deletePost(dto);
   }
 }
