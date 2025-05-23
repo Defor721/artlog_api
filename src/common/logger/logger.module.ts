@@ -1,11 +1,13 @@
 import { WinstonModule } from 'nest-winston';
-import { Module } from '@nestjs/common';
 import * as winston from 'winston';
+import * as DailyRotateFile from 'winston-daily-rotate-file';
+import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
     WinstonModule.forRoot({
       transports: [
+        // 콘솔 로그
         new winston.transports.Console({
           format: winston.format.combine(
             winston.format.timestamp(),
@@ -15,17 +17,23 @@ import * as winston from 'winston';
             }),
           ),
         }),
-        new winston.transports.File({
-          filename: 'logs/error.log', //로그 파일 저장 경로
-          level: 'error', // 에러 이상(error,critical,fatal등)
+        // 날짜별 로그 파일 저장
+        new DailyRotateFile({
+          dirname: 'logs', // 저장 디렉토리
+          filename: 'error-%DATE%.log', // 파일 이름 패턴
+          datePattern: 'YYYY-MM-DD', // 일자별
+          level: 'error', // error 레벨만 저장
+          zippedArchive: true, // 오래된 로그는 zip 압축
+          maxSize: '20m', // 파일 최대 크기
+          maxFiles: '14d', // 최대 14일 보관
           format: winston.format.combine(
             winston.format.timestamp(),
-            winston.format.json(), //json형식으로 저장
+            winston.format.json(),
           ),
         }),
       ],
     }),
   ],
-  exports: [WinstonModule], // 다른 모듈에서 사용할 수 있게 export
+  exports: [WinstonModule],
 })
 export class LoggerModule {}
