@@ -38,6 +38,8 @@ export class PostsController {
   @Get(':postId')
   @ApiOperation({ summary: '게시물 상세 조회' })
   @ApiResponse({ status: 200, description: '게시물 상세 조회 완료' })
+  @ApiResponse({ status: 404, description: '게시물이 존재하지 않음' })
+  @ApiResponse({ status: 403, description: '삭제 권한 없음' })
   @UseGuards(AuthGuard('jwt'))
   getPost(@Param() dto: PostParamDto, @User('userId') userId: string) {
     return this.postsService.getPost(dto, userId);
@@ -46,6 +48,8 @@ export class PostsController {
   @Delete(':postId')
   @ApiOperation({ summary: '게시물 삭제' })
   @ApiResponse({ status: 200, description: '게시물 삭제 완료' })
+  @ApiResponse({ status: 404, description: '게시물이 존재하지 않음' })
+  @ApiResponse({ status: 403, description: '삭제 권한 없음' })
   @UseGuards(AuthGuard('jwt'))
   deletePost(@Param() dto: PostParamDto, @User('userId') userId: string) {
     return this.postsService.deletePost(dto, userId);
