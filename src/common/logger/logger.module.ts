@@ -1,13 +1,12 @@
 import { WinstonModule } from 'nest-winston';
+import { Module } from '@nestjs/common';
 import * as winston from 'winston';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
-import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
     WinstonModule.forRoot({
       transports: [
-        // 콘솔 로그
         new winston.transports.Console({
           format: winston.format.combine(
             winston.format.timestamp(),
@@ -17,15 +16,31 @@ import { Module } from '@nestjs/common';
             }),
           ),
         }),
-        // 날짜별 로그 파일 저장
+
+        // error 로그 파일 (error 이상만)
         new DailyRotateFile({
-          dirname: 'logs', // 저장 디렉토리
-          filename: 'error-%DATE%.log', // 파일 이름 패턴
-          datePattern: 'YYYY-MM-DD', // 일자별
-          level: 'error', // error 레벨만 저장
-          zippedArchive: true, // 오래된 로그는 zip 압축
-          maxSize: '20m', // 파일 최대 크기
-          maxFiles: '14d', // 최대 14일 보관
+          dirname: 'logs',
+          filename: 'error-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          level: 'error',
+          zippedArchive: true,
+          maxSize: '20m',
+          maxFiles: '14d',
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.json(),
+          ),
+        }),
+
+        // info 로그 파일 (log, info, warn 포함)
+        new DailyRotateFile({
+          dirname: 'logs',
+          filename: 'info-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          level: 'info', //  log(), info(), warn(), error() 모두 포함
+          zippedArchive: true,
+          maxSize: '20m',
+          maxFiles: '14d',
           format: winston.format.combine(
             winston.format.timestamp(),
             winston.format.json(),

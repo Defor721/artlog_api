@@ -21,8 +21,9 @@ export class LoggingInterceptor implements NestInterceptor {
     const now = Date.now();
     const request = context.switchToHttp().getRequest();
     const { method, originalUrl, body } = request;
-    const userId = request.user?.id ?? 'anonymous'; // 유저 요청 추적
-    //  민감 경로(사용자 정보)는 제외할 것
+    const userId = request.user?.id ?? 'anonymous';
+
+    // 민감 경로 제외
     const shouldSkip = ['/auth/login', '/auth/register'].includes(originalUrl);
 
     return next.handle().pipe(
@@ -31,12 +32,12 @@ export class LoggingInterceptor implements NestInterceptor {
 
         if (!shouldSkip) {
           this.logger.log(
-            `[${method}] ${originalUrl} ${delay}ms\n🧑 User: ${userId}\n👉 Request: ${JSON.stringify(body)}\n✅ Response: ${JSON.stringify(responseData)}`,
+            `[${method}] ${originalUrl} ${delay}ms\n🧑 User: ${userId}\n👉 Request: ${JSON.stringify(body)}`,
             context.getClass().name,
           );
         } else {
           this.logger.log(
-            `[${method}] ${originalUrl} ${delay}ms (body logging skipped)`,
+            `[${method}] ${originalUrl} ${delay}ms (request logging skipped)`,
             context.getClass().name,
           );
         }
