@@ -12,6 +12,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
 import { PostsModule } from './posts/posts.module';
 import { LoggerModule } from './common/logger/logger.module';
+import { S3Service } from './s3/s3.service';
+import { UploadController } from './upload/upload.controller';
 
 @Module({
   imports: [
@@ -24,7 +26,11 @@ import { LoggerModule } from './common/logger/logger.module';
     PostsModule,
     LoggerModule,
   ],
-  controllers: [AppController, AuthController],
-  providers: [AppService, { provide: APP_GUARD, useClass: RolesGuard }],
+  controllers: [AppController, AuthController, UploadController],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: RolesGuard },
+    S3Service,
+  ],
 })
 export class AppModule {}
