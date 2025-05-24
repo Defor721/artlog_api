@@ -14,10 +14,12 @@ import { PostsModule } from './posts/posts.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { S3Service } from './s3/s3.service';
 import { UploadController } from './upload/upload.controller';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     CacheModule.register({ isGlobal: true }), //전역에서 사용하도록, TTL 설정할 것. 추후 Redis 고려
+    ConfigModule.forRoot({ isGlobal: true }), //s3service에서 주입받고 있으므로 appmodule에서 import 해야함
     PrismaModule,
     UsersModule,
     PerformancesModule,
