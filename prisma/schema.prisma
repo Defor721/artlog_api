@@ -54,9 +54,9 @@ model Performance {
 }
 
 model Post {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  user              User     @relation(fields: [userId], references: [id]) // fields:외래키역할을하는 필드 references:연결된 상대 모델의 필드
-  userId            String   @db.ObjectId
+  id                 String    @id @default(auto()) @map("_id") @db.ObjectId
+  user               User      @relation(fields: [userId], references: [id])
+  userId             String    @db.ObjectId
   selectedExhibition String
   star               Float
   title              String
@@ -64,15 +64,17 @@ model Post {
   isPublic           Boolean
   keywords           String[]
   ticket             String?
-  photos             String[]
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  photos             Photo[]   // 🔥 1:N 관계로 연결
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }
 
-model Upload {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  originalName String
-  mimeType     String
-  data         Bytes
-  createdAt    DateTime @default(now())
+model Photo {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  post       Post     @relation(fields: [postId], references: [id])
+  postId     String   @db.ObjectId
+  s3Key      String   // S3 object key (삭제, 권한 관리용)
+  url        String   // S3 public URL
+  createdAt  DateTime @default(now())
 }
+
