@@ -40,11 +40,4 @@ export class CreatePostDto {
   @IsOptional()
   @IsString()
   ticket?: string;
-
-  @ApiProperty({
-    example: ['imgurl=sadasda12231', 'imgurl=dasdas', 'imgurl=qwnjqnjfk'],
-  })
-  @IsArray()
-  @IsString({ each: true })
-  photos: string[];
 }

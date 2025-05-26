@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectsCommand,
+} from '@aws-sdk/client-s3';
 import { v4 as uuid } from 'uuid';
-
+import { Express } from 'express';
+type UploadResult = { key: string; url: string };
 @Injectable()
 export class S3Service {
   private s3: S3Client;
@@ -19,21 +24,45 @@ export class S3Service {
     this.bucket = this.config.get<string>('AWS_S3_BUCKET')!;
   }
 
-  async uploadFile(file: Express.Multer.File) {
-    const key = `uploads/${uuid()}-${file.originalname}`;
+  async uploadFiles(
+    userId: string,
+    postId: string,
+    files: Express.Multer.File[],
+  ): Promise<UploadResult[]> {
+    const uploadResults: UploadResult[] = [];
 
-    const command = new PutObjectCommand({
+    for (const file of files) {
+      const key = `uploads/${userId}/${postId}/${uuid()}-${file.originalname}`;
+
+      const command = new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+        ACL: 'public-read',
+      });
+
+      await this.s3.send(command);
+
+      const url = `https://${this.bucket}.s3.${this.config.get<string>(
+        'AWS_REGION',
+      )}.amazonaws.com/${key}`;
+
+      uploadResults.push({ key, url });
+    }
+
+    return uploadResults;
+  }
+  async deleteFiles(keys: string[]) {
+    if (keys.length === 0) return;
+
+    const deleteParams = {
       Bucket: this.bucket,
-      Key: key,
-      Body: file.buffer,
-      ContentType: file.mimetype,
-    });
-
-    await this.s3.send(command);
-
-    return {
-      key,
-      url: `https://${this.bucket}.s3.${this.config.get<string>('AWS_REGION')}.amazonaws.com/${key}`,
+      Delete: {
+        Objects: keys.map((key) => ({ Key: key })),
+      },
     };
+
+    await this.s3.send(new DeleteObjectsCommand(deleteParams));
   }
 }
