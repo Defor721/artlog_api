@@ -7,13 +7,11 @@ import { UsersModule } from './users/users.module';
 import { PerformancesModule } from './performances/performances.module';
 import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
-import { UploadModule } from './upload/upload.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
 import { PostsModule } from './posts/posts.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { S3Service } from './s3/s3.service';
-import { UploadController } from './upload/upload.controller';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -24,11 +22,10 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     PerformancesModule,
     AuthModule,
-    UploadModule,
     PostsModule,
     LoggerModule,
   ],
-  controllers: [AppController, AuthController, UploadController],
+  controllers: [AppController, AuthController],
   providers: [
     AppService,
     { provide: APP_GUARD, useClass: RolesGuard },

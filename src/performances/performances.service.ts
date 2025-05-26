@@ -14,9 +14,8 @@ export class PerformancesService {
     if (cached) {
       return cached;
     }
-
     const data = await this.prisma.performance.findMany();
-    await this.cacheManager.set('performances', data, 60000); // 60초간 캐시(밀리초).cachemanager 5.0 이상부터 밀리초
+    await this.cacheManager.set('performances', data, 60000); // 60초간 캐시(밀리초).cachemanager 5.0 이상부터 밀리초 단위로 변경됨
     return data;
   }
 
