@@ -68,7 +68,7 @@ model Post {
   photos             Photo[]   // 🔥 1:N 관계로 연결
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt 
-   comments  Comment[] 
+  comments           Comment[] 
 }
 
 model Photo {
@@ -87,6 +87,8 @@ model Comment {
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade) // 게시글이 삭제되면 댓글도 같이 삭제
   authorId  String   @db.ObjectId
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade) // 유저가 삭제되면 댓글도 같이 삭제
+  edited    Boolean  @default(false)
+  editHistory Json? 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
