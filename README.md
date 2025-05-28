@@ -6,7 +6,7 @@ NestJS, Prisma, JWT 기반의 RESTful API 서버입니다.
 
 - NestJS
 - Prisma
-- MongoDB 
+- MongoDB (유저 정보 저장, 전시 정보는 trigger를 통해 갱신됨)
 - JWT (Passport 기반 인증)
 - Winston (로깅)
 - Swagger (API 문서 자동화)
