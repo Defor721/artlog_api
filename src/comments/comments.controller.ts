@@ -1,7 +1,16 @@
-import { Controller, Post, Body, UseGuards, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Get,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../common/decorators/user.decorator';
 
@@ -23,5 +32,15 @@ export class CommentsController {
   @ApiResponse({ status: 200, description: '댓글 조회 완료' })
   getCommentsByPost(@Param('postId') postId: string) {
     return this.commentsService.getCommentsByPost(postId);
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateCommentDto,
+    @User('userId') userId: string,
+  ) {
+    return this.commentsService.updateComment(id, dto.content, userId);
   }
 }

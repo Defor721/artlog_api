@@ -88,7 +88,15 @@ model Comment {
   authorId  String   @db.ObjectId
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade) // 유저가 삭제되면 댓글도 같이 삭제
   edited    Boolean  @default(false)
-  editHistory Json? 
+  editHistories CommentEditHistory[] // 관계 추가
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model CommentEditHistory {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  commentId  String    @db.ObjectId
+  comment    Comment   @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  prevContent String
+  editedAt   DateTime  @default(now())
 }

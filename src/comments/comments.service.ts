@@ -42,22 +42,19 @@ export class CommentsService {
     if (!comment) throw new NotFoundException('댓글을 찾을 수 없습니다');
     if (comment.authorId !== userId)
       throw new ForbiddenException('수정 권한이 없습니다');
-
-    const updatedHistory = Array.isArray(comment.editHistory) // prisma는 mongodb 기준으로 배열 타입을 지정할 수 없음. json타입으로 다뤄야 하기 때문에 TS쪽에서 방어 코드를 넣어줘야 함.
-      ? [...comment.editHistory]
-      : [];
-
-    updatedHistory.push({
-      previousContent: comment.content,
-      editedAt: new Date().toISOString(),
+    // 이전 댓글 저장
+    await this.prisma.commentEditHistory.create({
+      data: {
+        commentId: comment.id,
+        prevContent: comment.content,
+      },
     });
-
+    // 수정한 댓글 업데이트
     return this.prisma.comment.update({
       where: { id: commentId },
       data: {
         content: newContent,
         edited: true,
-        editHistory: updatedHistory,
       },
     });
   }
