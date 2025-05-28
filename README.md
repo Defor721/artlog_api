@@ -29,6 +29,7 @@ src/
 ├── auth/          로그인, 회원가입, JWT
 ├── users/         사용자 관련 API
 ├── posts/         관람 기록 관련 API
+├── comments/      댓글 관련 API
 ├── performances/  공연 정보 API
 ├── common/        공통 데코레이터, 가드
 ├── prisma/        Prisma 설정
