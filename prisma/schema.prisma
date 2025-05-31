@@ -38,7 +38,7 @@ model User {
   createdAt   DateTime @default(now()) // 생성 시간
   updatedAt   DateTime @updatedAt // 자동 업데이트 시간
   posts     Post[] // 사용자 게시물 기록
-  comments  Comment[]
+  comments  Comment[] // 사용자 댓글 기록
 }
 
 model Performance {
@@ -76,7 +76,7 @@ model Photo {
   post       Post     @relation(fields: [postId], references: [id])
   postId     String   @db.ObjectId
   s3Key      String   // S3 object key (삭제, 권한 관리용)
-  url        String   // S3 public URL
+  url        String   // S3 public URL (사진 접근용)
   createdAt  DateTime @default(now())
 }
 
