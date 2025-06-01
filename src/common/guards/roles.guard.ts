@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
@@ -12,7 +13,7 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<string[]>(
+    const requiredRoles = this.reflector.getAllAndOverride<string[]>( // getAllAndOverride = ROLES_KEY로 저장된 메타데이터를 우선순위에서 순서대로 찾아서 가장 먼저 발견된 값 반환
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
@@ -24,7 +25,7 @@ export class RolesGuard implements CanActivate {
     //context=실행 컨텍스트 switchToHttp= 현재 HTTP 요청, getRequest=실제 req객체
     // const { user } = req;
     if (!user || !requiredRoles.includes(user.role)) {
-      throw new ForbiddenException('권한이 없습니다.');
+      throw new UnauthorizedException('권한이 없습니다.');
     }
     return true;
   }
