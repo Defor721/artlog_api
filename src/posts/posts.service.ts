@@ -55,7 +55,7 @@ export class PostsService {
   async getPost(dto: PostParamDto, userId: string) {
     const post = await this.prisma.post.findUnique({
       where: { id: dto.postId },
-      include: { photos: true }, // 🔥 사진까지 같이 가져오기
+      include: { photos: true }, //  사진까지 같이 가져오기
     });
 
     if (!post) {
@@ -78,7 +78,7 @@ export class PostsService {
   async deletePost(dto: PostParamDto, userId: string) {
     const post = await this.prisma.post.findUnique({
       where: { id: dto.postId },
-      include: { photos: true }, // 🔥 사진까지 같이 가져오기
+      include: { photos: true }, //  사진까지 같이 가져오기
     });
     if (!post) {
       throw new NotFoundException('해당 게시글을 찾을 수 없습니다.');
