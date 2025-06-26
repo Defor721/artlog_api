@@ -14,6 +14,8 @@ import { LoggerModule } from './common/logger/logger.module';
 import { S3Service } from './s3/s3.service';
 import { ConfigModule } from '@nestjs/config';
 import { CommentsModule } from './comments/comments.module';
+import { DiaryModule } from './diary/diary.module';
+import { DiarysModule } from './diarys/diarys.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { CommentsModule } from './comments/comments.module';
     PostsModule,
     LoggerModule,
     CommentsModule,
+    DiaryModule,
+    DiarysModule,
   ],
   controllers: [AppController, AuthController],
   providers: [
