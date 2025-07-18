@@ -16,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CommentsModule } from './comments/comments.module';
 import { DiaryModule } from './diary/diary.module';
 import { DiarysModule } from './diarys/diarys.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { DiarysModule } from './diarys/diarys.module';
     CommentsModule,
     DiaryModule,
     DiarysModule,
+    AdminModule,
   ],
   controllers: [AppController, AuthController],
   providers: [

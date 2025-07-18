@@ -86,16 +86,42 @@ export class PostsService {
     if (post.userId !== userId) {
       throw new ForbiddenException('권한이 없습니다.');
     }
-    // 🔥 S3에서 이미지 삭제
+    //  S3에서 이미지 삭제
     const s3Keys = post.photos.map((photo) => photo.s3Key);
     if (s3Keys.length > 0) {
       await this.s3Service.deleteFiles(s3Keys);
     }
-    // 🔥 DB에서 Photo 레코드 삭제
+    //  DB에서 Photo 레코드 삭제
     await this.prisma.photo.deleteMany({
       where: { postId: dto.postId },
     });
-    // 🔥 DB에서 Post 레코드 삭제
+    //  DB에서 Post 레코드 삭제
+    return this.prisma.post.delete({
+      where: { id: dto.postId },
+    });
+  }
+  //관리자용 api
+  async deletePostByAdmin(dto: PostParamDto, userId: string) {
+    const post = await this.prisma.post.findUnique({
+      where: { id: dto.postId },
+      include: { photos: true }, //  사진까지 같이 가져오기
+    });
+    if (!post) {
+      throw new NotFoundException('해당 게시글을 찾을 수 없습니다.');
+    }
+    if (post.userId !== userId) {
+      throw new ForbiddenException('권한이 없습니다.');
+    }
+    //  S3에서 이미지 삭제
+    const s3Keys = post.photos.map((photo) => photo.s3Key);
+    if (s3Keys.length > 0) {
+      await this.s3Service.deleteFiles(s3Keys);
+    }
+    //  DB에서 Photo 레코드 삭제
+    await this.prisma.photo.deleteMany({
+      where: { postId: dto.postId },
+    });
+    //  DB에서 Post 레코드 삭제
     return this.prisma.post.delete({
       where: { id: dto.postId },
     });
