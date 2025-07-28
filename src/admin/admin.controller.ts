@@ -17,27 +17,27 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
   // 전체 유저 조회
-  @Get('users')
-  @Roles('ADMIN')
+  @Get(':userId')
+  @Roles('ADMIN') // Role 체크
   getAllUsers() {
     return;
   }
   //
-  @Patch()
+  @Patch(':userId')
   @Roles('ADMIN')
   patchUsers() {
     return;
   }
 
   // 단일 유저 삭제
-  @Delete()
+  @Delete(':userId')
   @Roles('ADMIN')
   deleteUsers() {
     return;
   }
 
   // 신고 누적 유저 밴?
-  @Post()
+  @Post(':userId')
   @Roles('ADMIN')
   banUsers() {
     return;
