@@ -1,0 +1,14 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+# 의존성 설치
+COPY package*.json ./
+RUN npm install
+
+# Prisma 클라이언트 생성
+COPY prisma ./prisma
+RUN npx prisma generate
+
+# 코드 실행 (핫리로드)
+CMD ["npm", "run", "start:dev"]

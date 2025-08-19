@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env # 내 PC의 .env 파일을 그대로 컨테이너에 전달
+    volumes:
+      - .:/app # 내 코드 ↔ 컨테이너 코드 연결
+      - /app/node_modules # node_modules는 컨테이너 내부 것만 사용
+    command: npm run start:dev
