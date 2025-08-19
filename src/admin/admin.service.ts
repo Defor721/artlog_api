@@ -19,6 +19,9 @@ export class AdminService {
   async deleteUser() {}
 
   async banUser(userId) {
-    const user = this.prisma.user.findUnique({ where: { id: userId } });
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (user!) {
+      throw new NotFoundException('유저를 찾을 수 없습니다');
+    }
   }
 }

@@ -27,7 +27,7 @@ export class CommentsController {
     return this.commentsService.createComment(dto, userId);
   }
 
-  @Get('post/:postId')
+  @Get('/:postId')
   @ApiOperation({ summary: '댓글 조회' })
   @ApiResponse({ status: 200, description: '댓글 조회 완료' })
   getCommentsByPost(@Param('postId') postId: string) {
@@ -35,6 +35,8 @@ export class CommentsController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: '댓글 수정' })
+  @ApiResponse({ status: 200, description: '댓글 수정 완료' })
   @UseGuards(AuthGuard('jwt'))
   update(
     @Param('id') id: string,
