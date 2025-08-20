@@ -17,6 +17,7 @@ import { CommentsModule } from './comments/comments.module';
 
 import { DiarysModule } from './diarys/diarys.module';
 import { AdminModule } from './admin/admin.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AdminModule } from './admin/admin.module';
 
     DiarysModule,
     AdminModule,
+    HealthModule,
   ],
   controllers: [AppController, AuthController],
   providers: [
