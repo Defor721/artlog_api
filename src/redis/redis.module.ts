@@ -9,7 +9,7 @@ import Redis from 'ioredis';
         return new Redis({
           host: process.env.REDIS_HOST!,
           port: Number(process.env.REDIS_PORT),
-          username: 'defor',
+          username: 'default',
           password: process.env.REDIS_PASSWORD!,
           // tls: {}, // Upstash와 같은 서버리스 Redis는 TLS 필수
         });
