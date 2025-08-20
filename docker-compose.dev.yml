@@ -1,13 +1,37 @@
+# docker-compose.dev.yml  (Compose v2: version 키 없음)
 services:
   app:
+    # 1) 이미지 빌드 설정: 로컬 개발용 Dockerfile을 사용합니다.
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.dev # 예: start:dev로 핫리로드
+
+    # 2) 포트 매핑: 브라우저에서 http://localhost:3000 접속
     ports:
       - '3000:3000'
+      # - "9229:9229"  # (옵션) 디버깅 필요 시 --inspect 포트 열기
+
+    # 3) 환경변수 주입: Atlas 연결 문자열 등은 .env에 넣고 여기서 주입
     env_file:
-      - .env # 내 PC의 .env 파일을 그대로 컨테이너에 전달
+      - .env
+
+    # 4) 볼륨:
+    #   - 로컬 소스(왼쪽)를 컨테이너 /app(오른쪽)에 바인드 → 저장 시 즉시 반영(핫리로드)
+    #   - /app/node_modules는 익명 볼륨으로 분리 → 로컬 node_modules와 충돌 방지
     volumes:
-      - .:/app # 내 코드 ↔ 컨테이너 코드 연결
-      - /app/node_modules # node_modules는 컨테이너 내부 것만 사용
+      - .:/app
+      - /app/node_modules
+      # - ./logs:/app/logs   # (옵션) 컨테이너 로그를 로컬에 보존하고 싶다면
+
+    # 5) 컨테이너 시작 시 실행할 명령
     command: npm run start:dev
+
+    # (옵션) 헬스체크: /health 엔드포인트가 있다면 켜두면 편리
+    # healthcheck:
+    #   test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+    #   interval: 30s
+    #   timeout: 3s
+    #   retries: 3
+
+    # (옵션) 재시작 정책: 개발용이라 필수는 아님
+    # restart: unless-stopped
