@@ -30,7 +30,6 @@ import { HealthModule } from './health/health.module';
     PostsModule,
     LoggerModule,
     CommentsModule,
-
     DiarysModule,
     AdminModule,
     HealthModule,

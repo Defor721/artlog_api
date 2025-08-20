@@ -9,7 +9,7 @@ import {
 @Controller('health')
 export class HealthController {
   constructor(
-    private health: HealthCheckService,
+    private health: HealthCheckService, //Terminus 제공. service 따로 만들 필요 없음.
     private http: HttpHealthIndicator,
   ) {}
 
